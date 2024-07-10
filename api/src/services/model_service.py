@@ -9,10 +9,17 @@ class ModelService:
     @classmethod
     def predict(cls, request: InferenceRequest):
         input_data = [
+            request.label_avg_price_per_room,
             request.no_of_adults,
             request.no_of_children,
+            request.required_car_parking_space,
+            request.arrival_year,
+            request.arrival_month,
+            request.no_of_special_requests,
             request.type_of_meal_plan,
-            
+            request.room_type_reserved,
+            request.market_segment_type,
+            request.booking_status
         ]
         prediction = cls.model.predict([input_data])[0]
         logger.info(f"Prediction: {prediction} for input: {input_data}")
