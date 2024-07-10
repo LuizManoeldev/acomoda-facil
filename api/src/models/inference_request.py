@@ -1,3 +1,5 @@
+from pydantic import BaseModel
+
 class InferenceRequest(BaseModel):
     label_avg_price_per_room: int
     no_of_adults: int
