@@ -7,14 +7,15 @@ dotenv_path = os.path.join(os.path.dirname(__file__), '../../environment/.env')
 load_dotenv(dotenv_path)
 
 # Pegue as variáveis de ambiente
-PROFILE_NAME = os.getenv('PROFILE_NAME')
-DB_INSTANCE_IDENTIFIER = os.getenv('DB_INSTANCE_IDENTIFIER')
-DB_INSTANCE_CLASS = os.getenv('DB_INSTANCE_CLASS')
-DB_ENGINE = os.getenv('DB_ENGINE')
-DB_NAME = os.getenv('DB_NAME')
-DB_USER = os.getenv('DB_USER')
-DB_PASSWORD = os.getenv('DB_PASSWORD')
-DB_PORT = os.getenv('DB_PORT')
+PROFILE_NAME            = os.getenv('PROFILE_NAME')
+DB_INSTANCE_IDENTIFIER  = os.getenv('DB_INSTANCE_IDENTIFIER')
+DB_INSTANCE_CLASS       = os.getenv('DB_INSTANCE_CLASS')
+DB_ENGINE               = os.getenv('DB_ENGINE')
+DB_NAME                 = os.getenv('DB_NAME')
+DB_USER                 = os.getenv('DB_USER')
+DB_PASSWORD             = os.getenv('DB_PASSWORD')
+DB_PORT                 = os.getenv('DB_PORT')
+DB_SUBNET_GROUP         = os.getenv('DB_SUBNET_GROUP')
 
 # Configura o cliente do boto3 para o RDS
 boto_session = boto3.Session(profile_name=PROFILE_NAME)
@@ -48,6 +49,7 @@ def create_rds_instance():
             EngineVersion='8.0',
             PubliclyAccessible=True,
             StorageType='gp2',
+            DBSubnetGroupName=DB_SUBNET_GROUP
         )
 
         db_instance = response['DBInstance']
@@ -68,10 +70,10 @@ def create_rds_instance():
         print(f"Erro ao criar a instância do banco de dados: {e}")
         return None
 
-#if __name__ == "__main__":
- #   db_instance = create_rds_instance()
-  #  if db_instance:
-   #     endpoint = db_instance['Endpoint']
-    #    address = endpoint['Address']
-     #   port = endpoint['Port']
-      #  print(f"Conecte-se ao banco de dados usando o endpoint: {address} e porta: {port}")
+if __name__ == "__main__":
+   db_instance = create_rds_instance()
+   if db_instance:
+       endpoint = db_instance['Endpoint']
+       address = endpoint['Address']
+       port = endpoint['Port']
+       print(f"Conecte-se ao banco de dados usando o endpoint: {address} e porta: {port}")
