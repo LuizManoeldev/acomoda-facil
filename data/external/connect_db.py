@@ -1,43 +1,33 @@
+from aifc import Error
 import os
 from dotenv import load_dotenv
-import mysql.connector
-from mysql.connector import Error
-from create_rds_instance import create_rds_instance
+from sqlalchemy import create_engine
+
 
 # Carrega as variáveis de ambiente do arquivo .env
 dotenv_path = os.path.join(os.path.dirname(__file__), '../../environment/.env')
 load_dotenv(dotenv_path)
 
 def create_connection():
-    try:
-        db_instance = create_rds_instance()
-        if db_instance:
-            endpoint = db_instance['Endpoint']
-            host = endpoint['Address']
-            port = endpoint['Port']
-            database = os.getenv("DB_NAME")
-            user = os.getenv("DB_USER")
-            password = os.getenv("DB_PASSWORD")
+    try:    
+        host        = os.getenv("DB_HOST")
+        port        = os.getenv("DB_PORT")
+        database    = os.getenv("DB_NAME")
+        user        = os.getenv("DB_USER")
+        password    = os.getenv("DB_PASSWORD")
 
-            # Conecta ao banco de dados MySQL
-            connection = mysql.connector.connect(
-                host=host,
-                port=port,
-                database=database,
-                user=user,
-                password=password
-            )
+        # Conectando via sqlalchemy
+        connection_string = f"mysql+pymysql://{user}:{password}@{host}:{port}/{database}"
+        connection = create_engine(connection_string)
 
-            if connection.is_connected():
-                print("Conexão bem-sucedida ao banco de dados")
-                return connection
+        if connection:
+            print("Conexão bem-sucedida ao banco de dados")
+            return connection
 
     except Error as e:
         print(f"Erro ao conectar ao banco de dados: {e}")
         return None
+    
 
-if __name__ == "__main__":
-    conn = create_connection()
-    if conn:
-        print('Conexão bem-sucedida')
-        conn.close()
+# Estabelecendo Conexao 
+conn = create_connection()
