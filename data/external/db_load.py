@@ -1,18 +1,16 @@
-from aifc import Error
 from connect_db import conn as connection
 import pandas as pd
 
 if __name__ == "__main__":
     try:
         # Carregando dataframe
-        reservations_dataframe = pd.read_csv('../assets/csv_files/hotel_reservations.csv')
+        reservations_dataframe = pd.read_csv('C:/Atividades compassUOL/Sprint 4-5/sprints-4-5-pb-aws-maio/assets/csv_files/hotel_reservations.csv')
 
         # Enviando dataframe para o RDS
-        # Nome da tabela, conexao com o banco, replace se ja existir,                             
         reservations_dataframe.to_sql('reservations', con=connection, if_exists='replace', index=False)
-
-        # Encerrando a conexao
+        
+        # Encerrando a conexão
         connection.dispose()
-        print("Conexão fechada")
-    except Error:
-        print(Error)
+        print("Envio do DataFrame realizado com sucesso e conexão fechada")
+    except Exception as e:
+        print(f"Erro ao enviar o DataFrame: {e}")
