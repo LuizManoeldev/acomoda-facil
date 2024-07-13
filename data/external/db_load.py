@@ -4,9 +4,11 @@ import pandas as pd
 if __name__ == "__main__":
     try:
         # Carregando dataframe
-        reservations_dataframe = pd.read_csv('C:/Atividades compassUOL/Sprint 4-5/sprints-4-5-pb-aws-maio/assets/csv_files/hotel_reservations.csv')
+        csv_path = 'data/raw/hotel_reservations.csv'
+        reservations_dataframe = pd.read_csv(csv_path)
 
         # Enviando dataframe para o RDS
+        #                             Nome da tabela, conexao com o banco - 
         reservations_dataframe.to_sql('reservations', con=connection, if_exists='replace', index=False)
         
         # Encerrando a conexão
