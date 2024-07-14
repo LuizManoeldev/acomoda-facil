@@ -9,31 +9,27 @@ def load_model_from_s3():
     s3 = session.client('s3')
     try:
         local_model_path = 'model.tar.gz'
-
-        s3 = boto3.client('s3')
         s3.download_file(BUCKET_NAME, MODEL_KEY, local_model_path)
         print(f"Modelo baixado para: {local_model_path}")
 
-        # Caminho para extrair o modelo
         extracted_model_path = 'xgboost-model'
+        if not os.path.exists(extracted_model_path):
+            os.makedirs(extracted_model_path)
 
-        # Extrair o arquivo tar.gz
         with tarfile.open(local_model_path, 'r:gz') as tar:
             tar.extractall(path=extracted_model_path)
         
-        # Verificar os arquivos extraídos
         extracted_files = os.listdir(extracted_model_path)
         print(f"Arquivos extraídos: {extracted_files}")
 
-        # Verificar se o modelo está presente após a extração
-        model_file = os.path.join(extracted_model_path, 'modelo.joblib')
+        model_file = os.path.join(extracted_model_path, 'xgboost-model')
+        
         if os.path.exists(model_file):
             print(f"Modelo encontrado em: {model_file}")
         else:
             print(f"Modelo não encontrado em: {model_file}")
             return None
         
-        # Carregar o modelo XGBoost
         model = xgb.Booster()
         model.load_model(model_file)
         print("Modelo carregado com sucesso.")

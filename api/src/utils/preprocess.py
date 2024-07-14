@@ -1,14 +1,12 @@
 import pandas as pd
 
 def preprocess_input(data):
-    df = pd.DataFrame([data.dict()])
-    # Transformar colunas categóricas em dummies
+    df = pd.DataFrame([data])
     df = pd.get_dummies(df, columns=[
         'type_of_meal_plan', 'room_type_reserved', 
         'market_segment_type', 'booking_status'
     ])
     
-    # Adicionar colunas que faltam com valores 0
     expected_columns = [
         'no_of_adults', 'no_of_children', 'required_car_parking_space', 
         'lead_time', 'arrival_year', 'arrival_month', 'arrival_date', 
@@ -26,10 +24,9 @@ def preprocess_input(data):
     ]
     
     for col in expected_columns:
-        if col not in df.columns:
+        if (col not in df.columns) and ('repeated_guest' not in col):
             df[col] = 0
     
-    # Reordenar as colunas para a ordem esperada pelo modelo
     df = df[expected_columns]
     
     return df
