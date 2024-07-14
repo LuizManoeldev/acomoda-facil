@@ -1,5 +1,6 @@
-from pydantic import BaseModel
+from pydantic import BaseModel  # Import BaseModel from pydantic for creating data models
 
+# Define a data model using BaseModel from pydantic
 class InferenceRequest(BaseModel):
     no_of_adults: int
     no_of_children: int

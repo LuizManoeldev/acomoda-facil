@@ -1,20 +1,20 @@
-# Use uma imagem base oficial do Python
+# Use an official Python base image
 FROM python:3.12-slim
 
-# Defina o diretório de trabalho
+# Set the working directory
 WORKDIR /app
 
-# Copie o arquivo requirements.txt para o diretório de trabalho
+# Copy the requirements.txt file to the working directory
 COPY requirements.txt .
 
-# Instale as dependências do Python
+# Install Python dependencies listed in requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copie o código da aplicação para o diretório de trabalho
+# Copy the application code to the working directory
 COPY . .
 
-# Exponha a porta em que a aplicação será executada
+# Expose the port on which the application will run
 EXPOSE 8000
 
-# Comando para iniciar a aplicação
+# Command to start the application
 CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]

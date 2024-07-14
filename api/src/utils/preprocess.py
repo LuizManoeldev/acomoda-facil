@@ -1,12 +1,16 @@
-import pandas as pd
+import pandas as pd 
 
 def preprocess_input(data):
+    # Create a DataFrame from the input data dictionary
     df = pd.DataFrame([data])
+    
+    # Convert categorical variables into dummy/indicator variables
     df = pd.get_dummies(df, columns=[
         'type_of_meal_plan', 'room_type_reserved', 
         'market_segment_type', 'booking_status'
     ])
     
+    # Define expected columns after one-hot encoding
     expected_columns = [
         'no_of_adults', 'no_of_children', 'required_car_parking_space', 
         'lead_time', 'arrival_year', 'arrival_month', 'arrival_date', 
@@ -23,10 +27,12 @@ def preprocess_input(data):
         'booking_status_Not_Canceled'
     ]
     
+    # Add missing columns with default value 0 if they are not present in the DataFrame
     for col in expected_columns:
-        if (col not in df.columns) and ('repeated_guest' not in col):
+        if col not in df.columns and 'repeated_guest' not in col:
             df[col] = 0
     
+    # Reorder DataFrame columns to match expected order
     df = df[expected_columns]
     
-    return df
+    return df  # Return the preprocessed DataFrame
