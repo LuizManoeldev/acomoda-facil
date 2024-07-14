@@ -1,40 +1,41 @@
-import boto3
-import os
-from dotenv import load_dotenv
+import boto3  # Import the boto3 library for AWS interactions
+import os  # Import the os module for operating system interactions
+from dotenv import load_dotenv  # Import load_dotenv function from dotenv package
 
-# Carrega as variáveis de ambiente do arquivo .env
+# Load environment variables from the .env file
 dotenv_path = os.path.join(os.path.dirname(__file__), '../../environment/.env')
 load_dotenv(dotenv_path)
 
-# Pegue as variáveis de ambiente
-PROFILE_NAME            = os.getenv('PROFILE_NAME')
-DB_INSTANCE_IDENTIFIER  = os.getenv('DB_INSTANCE_IDENTIFIER')
-DB_INSTANCE_CLASS       = os.getenv('DB_INSTANCE_CLASS')
-DB_ENGINE               = os.getenv('DB_ENGINE')
-DB_NAME                 = os.getenv('DB_NAME')
-DB_USER                 = os.getenv('DB_USER')
-DB_PASSWORD             = os.getenv('DB_PASSWORD')
-DB_PORT                 = os.getenv('DB_PORT')
-DB_SUBNET_GROUP         = os.getenv('DB_SUBNET_GROUP')
+# Retrieve environment variables
+PROFILE_NAME            = os.getenv('PROFILE_NAME')             # AWS profile name for boto3 session
+DB_INSTANCE_IDENTIFIER  = os.getenv('DB_INSTANCE_IDENTIFIER')   # RDS DB instance identifier
+DB_INSTANCE_CLASS       = os.getenv('DB_INSTANCE_CLASS')        # RDS instance class (e.g., db.t2.micro)
+DB_ENGINE               = os.getenv('DB_ENGINE')                # Database engine type (e.g., mysql)
+DB_NAME                 = os.getenv('DB_NAME')                  # Database name
+DB_USER                 = os.getenv('DB_USER')                  # Database username
+DB_PASSWORD             = os.getenv('DB_PASSWORD')              # Database password
+DB_PORT                 = os.getenv('DB_PORT')                  # Database port
+DB_SUBNET_GROUP         = os.getenv('DB_SUBNET_GROUP')          # DB subnet group for RDS instance
 
-# Configura o cliente do boto3 para o RDS
+# Configure boto3 client for RDS using the specified AWS profile
 boto_session = boto3.Session(profile_name=PROFILE_NAME)
 boto3.setup_default_session(profile_name=PROFILE_NAME)
-rds_client = boto3.client('rds')
+rds_client = boto3.client('rds')  # Initialize boto3 client for RDS
 
 def create_rds_instance():
     try:
-        # Verifica se a instância do RDS já existe
+        # Check if the RDS instance already exists
         response = rds_client.describe_db_instances(DBInstanceIdentifier=DB_INSTANCE_IDENTIFIER)
         db_instances = response['DBInstances']
         if len(db_instances) > 0:
-            print(f"A instância do banco de dados {DB_INSTANCE_IDENTIFIER} já existe.")
-            return db_instances[0]
+            print(f"The database instance {DB_INSTANCE_IDENTIFIER} already exists.")
+            return db_instances[0]  # Return the first instance found
+
     except rds_client.exceptions.DBInstanceNotFoundFault:
-        print(f"A instância do banco de dados {DB_INSTANCE_IDENTIFIER} não existe. Criando uma nova instância.")
+        print(f"The database instance {DB_INSTANCE_IDENTIFIER} does not exist. Creating a new instance.")
 
     try:
-        # Cria uma nova instância do RDS
+        # Create a new RDS instance
         response = rds_client.create_db_instance(
             DBInstanceIdentifier=DB_INSTANCE_IDENTIFIER,
             DBInstanceClass=DB_INSTANCE_CLASS,
@@ -53,27 +54,30 @@ def create_rds_instance():
         )
 
         db_instance = response['DBInstance']
-        print(f"Criando a instância do banco de dados {DB_INSTANCE_IDENTIFIER}...")
+        print(f"Creating database instance {DB_INSTANCE_IDENTIFIER}...")
 
-        # Espera até que a instância esteja disponível
+        # Wait until the instance is available
         waiter = rds_client.get_waiter('db_instance_available')
         waiter.wait(DBInstanceIdentifier=DB_INSTANCE_IDENTIFIER)
         
-        # Obtém novamente os detalhes da instância após criação
+        # Retrieve the instance details again after creation
         response = rds_client.describe_db_instances(DBInstanceIdentifier=DB_INSTANCE_IDENTIFIER)
-        db_instance = response['DBInstances'][0]  # Acessa a primeira instância retornada
+        db_instance = response['DBInstances'][0]  # Access the first returned instance
 
-        print(f"A instância do banco de dados {DB_INSTANCE_IDENTIFIER} está disponível.")
+        print(f"The database instance {DB_INSTANCE_IDENTIFIER} is available.")
         return db_instance
 
     except Exception as e:
-        print(f"Erro ao criar a instância do banco de dados: {e}")
+        print(f"Error creating the database instance: {e}")
         return None
 
 if __name__ == "__main__":
-   db_instance = create_rds_instance()
-   if db_instance:
-       endpoint = db_instance['Endpoint']
-       address = endpoint['Address']
-       port = endpoint['Port']
-       print(f"Conecte-se ao banco de dados usando o endpoint: {address} e porta: {port}")
+    # Create an RDS instance using the defined function
+    db_instance = create_rds_instance()
+
+    # If an instance was successfully created, print connection details
+    if db_instance:
+        endpoint = db_instance['Endpoint']
+        address = endpoint['Address']
+        port = endpoint['Port']
+        print(f"Connect to the database using endpoint: {address} and port: {port}")

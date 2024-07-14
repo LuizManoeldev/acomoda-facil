@@ -1,18 +1,18 @@
-from connect_db import conn as connection
-import pandas as pd
+from connect_db import conn as connection  # Import the database connection object from connect_db.py
+import pandas as pd  # Import the pandas library for data manipulation
 
 if __name__ == "__main__":
     try:
-        # Carregando dataframe
+        # Load the dataframe from a CSV file
         csv_path = 'data/raw/hotel_reservations.csv'
         reservations_dataframe = pd.read_csv(csv_path)
 
-        # Enviando dataframe para o RDS
-        #                             Nome da tabela, conexao com o banco - 
+        # Send the dataframe to the RDS database
         reservations_dataframe.to_sql('reservations', con=connection, if_exists='replace', index=False)
         
-        # Encerrando a conexão
+        # Close the database connection
         connection.dispose()
-        print("Envio do DataFrame realizado com sucesso e conexão fechada")
+        print("DataFrame sent successfully and connection closed")
+    
     except Exception as e:
-        print(f"Erro ao enviar o DataFrame: {e}")
+        print(f"Error sending the DataFrame: {e}")
