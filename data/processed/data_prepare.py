@@ -1,11 +1,9 @@
 from get_rds_data import base_reservations, engine
 import pandas as pd
 
-
 try:
     # Removendo colunas desnecessarias
-    prepared_base = base_reservations.drop(['repeated_guest', 
-                                            'no_of_previous_bookings_not_canceled', 
+    prepared_base = base_reservations.drop(['no_of_previous_bookings_not_canceled', 
                                             'Booking_ID',
                                             'no_of_weekend_nights',
                                             'no_of_week_nights'], axis = 1)
