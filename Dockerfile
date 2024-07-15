@@ -14,8 +14,13 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY api /app/api
 COPY data /app/data
 COPY environment /app/environment
+
+# Copy the local model file if it exists
+COPY model.tar.gz /app/model.tar.gz
+COPY xgboost-model /app/xgboost-model
+
 # Make port 8000 available to the world outside this container
-EXPOSE 9000
+EXPOSE 8000
 
 # Run main.py when the container launches
-CMD ["uvicorn", "api.src.main:app"]
+CMD ["uvicorn", "api.src.main:app", "--host", "0.0.0.0", "--port", "8000"]

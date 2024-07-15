@@ -3,6 +3,7 @@ import xgboost as xgb  #
 from api.src.models.inference_request import InferenceRequest  
 from api.src.services.model_service import ModelService
 from api.src.logging.logger import logger
+from api.src.utils.preprocess import preprocess_input
 
 router = APIRouter()  # Create an instance of APIRouter for defining API endpoints
 
