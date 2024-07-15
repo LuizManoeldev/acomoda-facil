@@ -2,8 +2,8 @@ import tarfile
 import os  
 import boto3 
 import xgboost as xgb
-from src.logging.logger import logger
-from src.config.config import PROFILE_NAME, BUCKET_NAME, MODEL_KEY  
+from api.src.logging.logger import logger
+from api.src.config.config import PROFILE_NAME, BUCKET_NAME, MODEL_KEY  
 
 def load_model_from_s3():
     # Create a session using boto3 with the specified AWS profile

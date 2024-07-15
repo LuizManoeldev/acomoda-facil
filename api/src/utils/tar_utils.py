@@ -1,6 +1,6 @@
 import tarfile  
 from io import BytesIO
-from src.logging.logger import logger
+from api.src.logging.logger import logger
 
 def extract_tar_gz(fileobj):
     fileobj_bytes = fileobj.read()  # Read the contents of the file object into bytes

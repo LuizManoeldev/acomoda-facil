@@ -1,10 +1,14 @@
 from fastapi import APIRouter, HTTPException 
 import xgboost as xgb  # 
-from src.models.inference_request import InferenceRequest  
-from src.services.model_service import ModelService
-from src.logging.logger import logger
+from api.src.models.inference_request import InferenceRequest  
+from api.src.services.model_service import ModelService
+from api.src.logging.logger import logger
 
 router = APIRouter()  # Create an instance of APIRouter for defining API endpoints
+
+@router.get("/")
+def read_root():
+    return {"message": "API is running"}
 
 @router.post("/api/v1/inference") 
 def make_inference(request: InferenceRequest): 
