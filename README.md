@@ -41,7 +41,7 @@ Bem-vindo à documentação do sistema de previsão de valor de alugueis em hót
 - **SageMaker** - Serviço para treinar e desenvolver modelos de macinhe Learning 
 - **Jupyter Notebooks** - Execução dos códigos
 ### Contêineres e banco de dados 
-- **Docker** - Plataforma para executar os contêineres, melhorando o deploy e o processamento do sistema. 
+- **Docker Compose** - Plataforma para executar os contêineres, melhorando o deploy e o processamento do sistema. 
 - **PyMySQL (1.1.1)** - Biblioteca Python utilizada para consultas, inserções, atualizações e deleções de registros em bancos de dados MySQL.
 - **S3** - Armazenar o modelo.
 
@@ -121,13 +121,30 @@ ___
    ```bash 
    cd sprints-4-5-pb-aws-maio
    ```
+#### III. Criação do Arquivo .env:
+Use como exemplo o arquivo `environment/.env.example` para criar um arquivo `.env` na raiz do projeto. Preencha os campos de acordo com as especificidades.
 
-#### III. Instale as Dependências:
+```env
+PROFILE_NAME= Perfil da AWS
+ROLE_ARN= Regras para usar o Sagemaker e o S3   
+DB_INSTANCE_IDENTIFIER= Instancia do banco de dados RDS
+DB_INSTANCE_CLASS= Classe da instancia
+DB_ENGINE= MySQL                                                    #Obrigatório ser, por causa do PyMySQL
+DB_NAME= Nome do banco de dados
+DB_USER= Nome do usuário administrador
+DB_PASSWORD= Senha do usuário administrador
+DB_PORT=3306                                                        #Não necessáriamente esta, mas é aconselhável
+DB_HOST=URL do banco de dados
+DB_SUBNET_GROUP= Grupo de subredes onde a instância RDS será criada
+```
+
+
+#### IV. Instale as Dependências:
    ```bash
    pip install -r requirements.txt
    ```
 
-#### IV. Rode os Scripts:
+#### V. Rode os Scripts:
 Todos os arquivos citados estão localizados na pasta `data/`.
 
 - Crie a instância:
@@ -162,23 +179,6 @@ Todos os arquivos citados estão localizados na pasta `data/`.
 DBSubnetGroupName: nome_da_subnet
 ```
 
-#### V. Criação do Arquivo .env:
-Use como exemplo o arquivo `environment/.env.example` para criar um arquivo `.env` na raiz do projeto. Preencha os campos de acordo com as especificidades.
-
-```env
-PROFILE_NAME= Perfil da AWS
-ROLE_ARN= Regras para usar o Sagemaker e o S3   
-DB_INSTANCE_IDENTIFIER= Instancia do banco de dados RDS
-DB_INSTANCE_CLASS= Classe da instancia
-DB_ENGINE= MySQL                                                    #Obrigatório ser, por causa do PyMySQL
-DB_NAME= Nome do banco de dados
-DB_USER= Nome do usuário administrador
-DB_PASSWORD= Senha do usuário administrador
-DB_PORT=3306                                                        #Não necessáriamente esta, mas é aconselhável
-DB_HOST=URL do banco de dados
-DB_SUBNET_GROUP= Grupo de subredes onde a instância RDS será criada
-```
-
 
 #### VI. Login da AWS CLI:
 Confirme que está com as credenciais da AWS CLI corretas para conseguir logar e executar os notebooks.
@@ -188,11 +188,20 @@ Confirme que está com as credenciais da AWS CLI corretas para conseguir logar e
 python api/main.py
 ```
 
-#### VIII. Crie a Execução Local do Docker:
+#### VIII. Crie a Execução Local do Docker Compose:
 ```bash
-docker build -t nome-da-imagem .
-docker run -p 80:3000 nome-da-imagem
+docker compose up -d
 ```
+
+##### Observações Adicionais
+- Configuração do Docker Compose: Certifique-se de que o arquivo docker-compose.yml está configurado corretamente na raiz do projeto. Se não estiver, forneça instruções para criá-lo.
+- Ambiente Virtual: Recomenda-se criar um ambiente virtual para instalar as dependências:
+```bash
+   python -m venv venv
+   source venv/bin/activate
+   pip install -r requirements.txt
+```
+- Permissões e Políticas IAM: Verifique se o perfil da AWS tem permissões adequadas para criar e gerenciar instâncias RDS, acessar S3, e outras operações necessárias.
 
 Pronto! Agora você pode acessar sua aplicação e vê-la funcionar.
 
