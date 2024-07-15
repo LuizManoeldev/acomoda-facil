@@ -3,7 +3,8 @@
 <p align="center">
  <a href="#desenvolvimento-e-resultado">Desenvolvimento</a> • 
  <a href="#tecnologias-utilizadas">Tecnologias</a> • 
-  <a href="#como-foi">Detalhamento</a> •
+ <a href="#como-foi">Detalhamento</a> •
+ <a href="#arquitetura">Arquitetura</a> •
  <a href="#pastas">Pastas</a> •
  <a href="#instruções">Como rodar</a>•
  <a href="#dificuldades-encontradas">Dificuldades</a> •
@@ -48,7 +49,7 @@ Bem-vindo à documentação do sistema de previsão de valor de alugueis em hót
 
 <h2 id="como-foi"> 🔎 Como Foi Alcançado Este Resultado de Modelo </h2>
 
-Primeiramente, foram selecionadas as primeiras 29 colunas para fazer o conjunto de testes. Depois, foram decididos os hiperparâmetros do modelo.
+Primeiramente, foram selecionadas as primeiras 29 colunas para fazer o conjunto de testes (Caso queira analisar e saber como escolhemos cada coluna, você pode executar o notebook que está localizado nas pastas `notebooks\exploratory`). Depois, foram decididos os hiperparâmetros do modelo.
 
 ### Hiperparâmetros
 
@@ -81,6 +82,10 @@ Após vários testes, foi percebido que uma quantidade adequada de rodadas de bo
 ____
 A conclusão dos hiperparâmetros utilizados neste modelo de XGBoost foi alcançada a partir de um extenso processo de tuning. Esse processo envolveu testar várias combinações de hiperparâmetros para identificar a configuração que proporcionasse a melhor acurácia e desempenho geral do modelo.
 
+<h2 id="arquitetura"> 	✒️ Arquitetura </h2>
+
+![Diagrama - SasgeMaker Training](image/arquitetura.png)
+
 <h2 id="pastas"> 📂 Pastas </h2>
 
 
@@ -88,7 +93,7 @@ A conclusão dos hiperparâmetros utilizados neste modelo de XGBoost foi alcanç
 .
 ├── api/             # Diretório que contém a API do sistema.
 │   ├── src/         # Código-fonte da aplicação, onde a lógica principal está implementada.
-│   ├── main         # Ponto de entrada da aplicação, onde a API é inicializada.
+│   └── main         # Ponto de entrada da aplicação, onde a API é inicializada.
 │   
 ├── data/            # Diretório que armazena os dados utilizados no sistema.
 │   ├── external/    # Dados externos que serão utilizados para enriquecer a análise.
@@ -98,6 +103,7 @@ A conclusão dos hiperparâmetros utilizados neste modelo de XGBoost foi alcanç
 ├── notebooks/       # Diretório que contém os Jupyter Notebooks para análise e modelagem.
 │   ├── exploratory/ # Notebooks para exploração inicial dos dados.
 │   └── modeling/    # Notebooks focados na construção e avaliação dos modelos de machine learning.
+├──scripts_ec2       # Scripts que serão executados na instância EC2. 
 └── Dockerfile       # Arquivo de configuração para criar a imagem Docker da API.
 ```
 
@@ -181,14 +187,25 @@ DBSubnetGroupName: nome_da_subnet
 
 
 #### VI. Login da AWS CLI:
-Confirme que está com as credenciais da AWS CLI corretas para conseguir logar e executar os notebooks.
+Confirme que está com as credenciais da AWS CLI corretas para conseguir logar e executar os notebooks. Você poderá fazer isto no arqurivo localizado na pasta `notebooks\modeling`.
 
-#### VII. Execute o Arquivo Principal:
+
+#### VII. Preencha as credenciais do config:
+Após receber os valores gerados pelo notebook. Preencha a credenciais do arquivo localizado na pasta `api\src\config`.
+
+```py
+   BUCKET_NAME ='your-bucket-aws-name'
+   MODEL_KEY = 'path-to-model'
+   HOST = '127.0.0.1'
+   PORT = 9000
+   PROFILE_NAME = 'name-of-your-aws-profile'
+```
+#### VIII. Execute o Arquivo Principal:
 ```bash
-python api/main.py
+   uvicorn api.src.main:app --reload
 ```
 
-#### VIII. Crie a Execução Local do Docker Compose:
+#### IX. Crie a Execução Local do Docker Compose:
 ```bash
 docker compose up -d
 ```
@@ -215,7 +232,7 @@ Pronto! Agora você pode acessar sua aplicação e vê-la funcionar.
 
 - Brian Rafael   - brian.trajano@compasso.com.br
 - Ester Pequeno  - ester.trevisan@compasso.com.br
-- Luiz Manoel    - ricardo.prado@compasso.com.br
+- Luiz Manoel    - luiz.dantas@compasso.com.br
 - Ricardo Luiz   - ricardo.prado@compasso.com.br
 
 ###### versão 0.0.1
