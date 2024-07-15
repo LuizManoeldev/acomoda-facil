@@ -1,7 +1,8 @@
 from fastapi import APIRouter, HTTPException 
 import xgboost as xgb  # 
 from src.models.inference_request import InferenceRequest  
-from src.services.model_service import ModelService  
+from src.services.model_service import ModelService
+from src.logging.logger import logger
 
 router = APIRouter()  # Create an instance of APIRouter for defining API endpoints
 
@@ -20,4 +21,5 @@ def make_inference(request: InferenceRequest):
         return {"result": prediction_int}  # Return prediction result as JSON response
     
     except Exception as e:
+        logger.error(f'Erro interno na requisição')
         raise HTTPException(status_code=500, detail=str(e))  # Raise HTTPException with status code 500 and error message
