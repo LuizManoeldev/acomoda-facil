@@ -84,7 +84,7 @@ A conclusão dos hiperparâmetros utilizados neste modelo de XGBoost foi alcanç
 
 <h2 id="arquitetura"> 	✒️ Arquitetura </h2>
 
-![Diagrama - SasgeMaker Training](image/arquitetura.png)
+![Diagrama - SasgeMaker Training](assets/image/arquitetura.png)
 
 <h2 id="pastas"> 📂 Pastas </h2>
 
